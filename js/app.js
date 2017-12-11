@@ -7,11 +7,12 @@ var getRandomPosition = function(){ //function to get a random position for an e
    console.log(getRandomPosition());
 
 // Enemies our player must avoid
-var Enemy = function(y) {
+var Enemy = function(y,speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.x = getRandomPosition();
     this.y = y;
+    this.speed = speed; //enemy speed
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -25,15 +26,21 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
-    this.x = this.x+(200*dt);
+    this.x = this.x+(this.speed*dt);
+    //console.log(this.x);
 
     if(this.x > 450){
         this.restart();
     }
 
     //check collision
-    //console.log("enemy : "+this.x+", player :"+player.y);
+   // console.log("enemyX: "+this.x+", playerX: "+player.x+" : enemyY: "+this.y+" playerY: "+player.y);
 
+
+    //handling collision with the enemies
+    if( (this.x < player.x && player.x < this.x + 50 )&&(this.y<= player.y &&player.y <= this.y+40)){
+            player.restart();
+    }
 
 
 };
@@ -45,7 +52,7 @@ Enemy.prototype.render = function() {
 
 Enemy.prototype.restart =  function () {
     this.x= getRandomPosition();
-}
+};
 
 
 // Now write your own player class
@@ -58,15 +65,15 @@ var Player = function(x,y){
 };
 
 Player.prototype.update = function(){
-    if(this.y == 0){
+    if(this.y === 0){
         alert("you won");
         this.restart();
     }
-}
+};
 
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 Player.prototype.handleInput = function(key){
     console.log("x = "+this.x+" y = "+this.y);
@@ -79,7 +86,7 @@ Player.prototype.handleInput = function(key){
     else if(key == 'right'&&this.x<=400){
         this.x += 20;
     }
-    else if(key == 'down'&this.y<=400){
+    else if(key == 'down'&&this.y<=400){
         this.y += 20;
     }
 
@@ -95,15 +102,14 @@ Player.prototype.restart = function(){
 // Place all enemy objects in an array called allEnemies
 
 var allEnemies = [
-    new Enemy(60),
-    new Enemy(60),
-    new Enemy(60),
-    new Enemy(140),
-    new Enemy(140),
-    new Enemy(140),
-    new Enemy(225),
-    new Enemy(225),
-    new Enemy(225)
+    new Enemy(60,100),
+    new Enemy(60,150),
+    new Enemy(140,100),
+    new Enemy(140,150),
+    new Enemy(220,100),
+    new Enemy(220,50)
+    // new Enemy(225),
+    // new Enemy(225)
 ];
 
 // Place the player object in a variable called player
